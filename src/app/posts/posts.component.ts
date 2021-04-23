@@ -8,12 +8,25 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PostsComponent {
   posts: any;
-  constructor(http: HttpClient) {
-    http
-      .get('https://jsonplaceholder.cypress.io/todos/')
-      .subscribe((response) => {
-        this.posts = response;
-        console.log(response);
-      });
+  // defined to DRY
+  // private bc it will stay within this class
+  private url = 'https://jsonplaceholder.cypress.io/todos/';
+
+  constructor(private http: HttpClient) {
+    http.get(this.url).subscribe((response) => {
+      this.posts = response;
+      console.log(response);
+    });
+  }
+
+  createPost(input: HTMLInputElement) {
+    let post: any = { title: input.value };
+
+    input.value = '';
+    this.http.post(this.url, JSON.stringify(post)).subscribe((response) => {
+      post.id = response;
+      this.posts.splice(0, 0, post);
+      console.log(post.id);
+    });
   }
 }

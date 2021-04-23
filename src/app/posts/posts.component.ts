@@ -57,4 +57,8 @@ export class PostsComponent implements OnInit {
       this.posts = response;
     });
   }
+  // remember, a class should have a single responsibility
+  // this promotes encapsulation
+  // always keep separation of concerns in mind
+  // NEVER call http services in a test!!
 }

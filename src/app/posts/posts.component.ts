@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -6,18 +6,19 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css'],
 })
-export class PostsComponent {
+export class PostsComponent implements OnInit {
   posts: any;
   // defined to DRY
   // private bc it will stay within this class
   private url = 'https://jsonplaceholder.cypress.io/todos/';
 
-  constructor(private http: HttpClient) {
-    http.get(this.url).subscribe((response) => {
-      this.posts = response;
-      console.log(response);
-    });
-  }
+  // lifecycle hooks
+  // lifecycle events :
+  // creates a component, renders it, creates and renders children, destroys component
+  // ngOnInit is a lifecycle hook!
+  // OnChanges, DoCheck, AfterContentInit
+
+  constructor(private http: HttpClient) {}
 
   createPost(input: HTMLInputElement) {
     let post: any = { title: input.value };
@@ -45,6 +46,15 @@ export class PostsComponent {
     this.http.delete(this.url + '/' + post.id).subscribe((response) => {
       let index = this.posts.indexOf(post);
       this.posts.splice(index, 1);
+    });
+  }
+  // as long as this method is defined in our class it will be
+  // angular automatically calls it on initialization
+
+  // do not call httpservices in constructor, if you need initialization use ngOnInit
+  ngOnInit() {
+    this.http.get(this.url).subscribe((response) => {
+      this.posts = response;
     });
   }
 }
